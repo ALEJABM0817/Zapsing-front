@@ -1,0 +1,61 @@
+<button routerLink="/documents/create" class="btn btn-info mb-3">Crear Documentos</button>
+<div *ngIf="loading" class="spinner-border text-primary" role="status">
+  <span class="sr-only"></span>
+</div>
+<ul *ngIf="!loading && documents && documents.length > 0" class="list-group">
+  <li *ngFor="let document of documents" class="list-group-item">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <p class="mb-1"><strong>Nombre:</strong> {{ document.name }}</p>
+        <p class="mb-1"><strong>Estado:</strong> {{ document.status }}</p>
+        <p class="mb-1"><strong>Creado:</strong> {{ document.createdAt }}</p>
+      </div>
+      <div>
+        <button *ngIf="document.id !== undefined" (click)="editDocument(document.id!)" class="btn btn-primary btn-sm me-2">Editar</button>
+        <button *ngIf="document.id !== undefined" (click)="openDeleteModal(document)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">Eliminar</button>
+      </div>
+    </div>
+    <ul class="list-group mt-2">
+      <li *ngFor="let signer of document.signers" class="list-group-item">
+        <p class="mb-1"><strong>Nombre:</strong> {{ signer.name }}</p>
+        <p class="mb-1"><strong>Correo:</strong> {{ signer.email }}</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ng-template #noDocuments>
+  <p>No hay documentos creados.</p>
+</ng-template>
+
+<div *ngIf="!loading && (!documents || documents.length === 0)">
+  <ng-container *ngTemplateOutlet="noDocuments"></ng-container>
+</div>
+
+<app-document-edit *ngIf="selectedDocument" [document]="selectedDocument" (documentEdited)="onDocumentEdited($event)"></app-document-edit>
+
+<div *ngIf="successMessage" class="alert alert-success">
+  {{ successMessage }}
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas eliminar este documento?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()" data-bs-dismiss="modal">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

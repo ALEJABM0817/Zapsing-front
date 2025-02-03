@@ -1,0 +1,24 @@
+<div *ngIf="document" class="container mt-4">
+  <form [formGroup]="documentForm" (ngSubmit)="updateDocument()">
+    <div class="form-group">
+      <label for="name">Nombre del Documento:</label>
+      <input id="name" formControlName="name" required class="form-control">
+    </div>
+    
+    <div formArrayName="signers" class="mt-3">
+      <div *ngFor="let signer of signers.controls; let i = index" [formGroupName]="i" class="form-group">
+        <label for="signerName">Nombre del Firmante:</label>
+        <input id="signerName" formControlName="name" required class="form-control">
+        
+        <label for="signerEmail" class="mt-2">Correo del Firmante:</label>
+        <input id="signerEmail" formControlName="email" required class="form-control">
+      </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary mt-3">Actualizar Documento</button>
+  </form>
+  
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+</div>
